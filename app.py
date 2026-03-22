@@ -3,6 +3,7 @@ from database import init_db, get_active_alerts, resolve_alert, record_alert, ca
 import os
 
 app = Flask(__name__)
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 # Initialize the database on startup
 init_db()
 
