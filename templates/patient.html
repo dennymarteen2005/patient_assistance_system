@@ -14,10 +14,10 @@
 </div>
 
 <div class="card">
-    <div class="video-container" style="position: relative; background: #000; border-radius: 12px; overflow: hidden; height: 480px;">
+    <div class="video-container" style="position: relative; width: 100%; aspect-ratio: 4/3; background: #000; border-radius: 12px; overflow: hidden;">
         <video id="input_video" style="display: none;" playsinline></video>
-        <canvas id="output_canvas" style="width: 100%; height: 100%; object-fit: contain;"></canvas>
-        <div id="gesture_overlay" style="position: absolute; top: 20px; left: 20px; color: #22c55e; font-size: 1.5rem; font-weight: 700; text-shadow: 0px 2px 4px rgba(0,0,0,0.8); background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 6px;">Camera Loading...</div>
+        <canvas id="output_canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"></canvas>
+        <div id="gesture_overlay" style="position: absolute; top: 20px; left: 20px; color: #22c55e; font-size: 1.5rem; font-weight: 700; text-shadow: 0px 2px 4px rgba(0,0,0,0.8); background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 6px; z-index: 10;">Camera Loading...</div>
     </div>
     
     <div class="controls-hint">
