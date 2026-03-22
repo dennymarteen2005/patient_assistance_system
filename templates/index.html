@@ -20,11 +20,14 @@
     <div class="card" style="text-align: center;">
         <div style="font-size: 4rem; margin-bottom: 1rem;">🛏️</div>
         <h3 style="margin-top: 0;">Patient Portal</h3>
-        <form action="/login" method="POST" style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem;">
+        <form action="/auth" method="POST" style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem;">
             <input type="hidden" name="role" value="patient">
-            <input type="text" name="username" placeholder="Username: patient_101" required style="padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); font-family: inherit;">
-            <input type="password" name="password" placeholder="Password: pass" required style="padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); font-family: inherit;">
-            <button type="submit" class="btn" style="background: #3b82f6; color: white;">Login</button>
+            <input type="text" name="username" placeholder="Create or Enter Username" required style="padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); font-family: inherit;">
+            <input type="password" name="password" placeholder="Create or Enter Password" required style="padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); font-family: inherit;">
+            <div style="display: flex; gap: 0.5rem;">
+                <button type="submit" name="action" value="login" class="btn" style="flex: 1; background: #3b82f6; color: white;">Login</button>
+                <button type="submit" name="action" value="signup" class="btn" style="flex: 1; background: #94a3b8; color: white;">Sign Up</button>
+            </div>
         </form>
     </div>
 
@@ -32,11 +35,14 @@
     <div class="card" style="text-align: center;">
         <div style="font-size: 4rem; margin-bottom: 1rem;">👩‍⚕️</div>
         <h3 style="margin-top: 0;">Nurse Station</h3>
-        <form action="/login" method="POST" style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem;">
+        <form action="/auth" method="POST" style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem;">
             <input type="hidden" name="role" value="nurse">
-            <input type="text" name="username" placeholder="Username: nurse_admin" required style="padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); font-family: inherit;">
-            <input type="password" name="password" placeholder="Password: pass" required style="padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); font-family: inherit;">
-            <button type="submit" class="btn" style="background: #22c55e; color: white;">Login</button>
+            <input type="text" name="username" placeholder="Create or Enter Username" required style="padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); font-family: inherit;">
+            <input type="password" name="password" placeholder="Create or Enter Password" required style="padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); font-family: inherit;">
+            <div style="display: flex; gap: 0.5rem;">
+                <button type="submit" name="action" value="login" class="btn" style="flex: 1; background: #22c55e; color: white;">Login</button>
+                <button type="submit" name="action" value="signup" class="btn" style="flex: 1; background: #94a3b8; color: white;">Sign Up</button>
+            </div>
         </form>
     </div>
 
@@ -44,11 +50,14 @@
     <div class="card" style="text-align: center;">
         <div style="font-size: 4rem; margin-bottom: 1rem;">🩺</div>
         <h3 style="margin-top: 0;">Doctor Central</h3>
-        <form action="/login" method="POST" style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem;">
+        <form action="/auth" method="POST" style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem;">
             <input type="hidden" name="role" value="doctor">
-            <input type="text" name="username" placeholder="Username: doctor_smith" required style="padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); font-family: inherit;">
-            <input type="password" name="password" placeholder="Password: pass" required style="padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); font-family: inherit;">
-            <button type="submit" class="btn" style="background: #eab308; color: white;">Login</button>
+            <input type="text" name="username" placeholder="Create or Enter Username" required style="padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); font-family: inherit;">
+            <input type="password" name="password" placeholder="Create or Enter Password" required style="padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); font-family: inherit;">
+            <div style="display: flex; gap: 0.5rem;">
+                <button type="submit" name="action" value="login" class="btn" style="flex: 1; background: #eab308; color: white;">Login</button>
+                <button type="submit" name="action" value="signup" class="btn" style="flex: 1; background: #94a3b8; color: white;">Sign Up</button>
+            </div>
         </form>
     </div>
 
@@ -56,11 +65,14 @@
     <div class="card" style="text-align: center;">
         <div style="font-size: 4rem; margin-bottom: 1rem;">👨‍👩‍👧</div>
         <h3 style="margin-top: 0;">Family Portal</h3>
-        <form action="/login" method="POST" style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem;">
+        <form action="/auth" method="POST" style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem;">
             <input type="hidden" name="role" value="family">
-            <input type="text" name="username" placeholder="Username: family_doe" required style="padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); font-family: inherit;">
-            <input type="password" name="password" placeholder="Password: pass" required style="padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); font-family: inherit;">
-            <button type="submit" class="btn" style="background: #8b5cf6; color: white;">Login</button>
+            <input type="text" name="username" placeholder="Create or Enter Username" required style="padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); font-family: inherit;">
+            <input type="password" name="password" placeholder="Create or Enter Password" required style="padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); font-family: inherit;">
+            <div style="display: flex; gap: 0.5rem;">
+                <button type="submit" name="action" value="login" class="btn" style="flex: 1; background: #8b5cf6; color: white;">Login</button>
+                <button type="submit" name="action" value="signup" class="btn" style="flex: 1; background: #94a3b8; color: white;">Sign Up</button>
+            </div>
         </form>
     </div>
 </div>

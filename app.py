@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, request, session, redirect, url_for, flash
-from database import init_db, get_active_alerts, resolve_alert, record_alert, cancel_patient_alerts
+from database import init_db, get_active_alerts, resolve_alert, record_alert, cancel_patient_alerts, create_user, authenticate_user
 import os
 
 app = Flask(__name__)
@@ -9,33 +9,42 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 # Initialize the database on startup
 init_db()
 
-# Hardcoded Authentication for demo
-USERS = {
-    "patient_101": {"password": "pass", "role": "patient"},
-    "nurse_admin": {"password": "pass", "role": "nurse"},
-    "doctor_smith": {"password": "pass", "role": "doctor"},
-    "family_doe": {"password": "pass", "role": "family"}
-}
-
 @app.route('/')
 def index():
     if 'role' in session:
         return redirect(url_for(f"{session['role']}_dashboard"))
     return render_template('index.html')
 
-@app.route('/login', methods=['POST'])
-def login():
-    username = request.form.get('username')
+@app.route('/auth', methods=['POST'])
+def auth():
+    username = request.form.get('username').strip() if request.form.get('username') else ''
     password = request.form.get('password')
     role = request.form.get('role')
+    action = request.form.get('action') # 'login' or 'signup'
     
-    user = USERS.get(username)
-    if user and user['password'] == password and user['role'] == role:
-        session['username'] = username
-        session['role'] = role
-        return redirect(url_for(f"{role}_dashboard"))
-    
-    flash("Invalid credentials or incorrect portal. Please try again.")
+    if not username or not password:
+        flash("Username and password are required.")
+        return redirect(url_for('index'))
+        
+    if action == 'signup':
+        success = create_user(username, password, role)
+        if success:
+            session['username'] = username
+            session['role'] = role
+            return redirect(url_for(f"{role}_dashboard"))
+        else:
+            flash("Username already exists! Pick another one or log in.")
+            return redirect(url_for('index'))
+            
+    elif action == 'login':
+        if authenticate_user(username, password, role):
+            session['username'] = username
+            session['role'] = role
+            return redirect(url_for(f"{role}_dashboard"))
+        else:
+            flash("Invalid credentials or incorrect portal. Please try again.")
+            return redirect(url_for('index'))
+            
     return redirect(url_for('index'))
 
 @app.route('/logout')
