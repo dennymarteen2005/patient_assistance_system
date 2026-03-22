@@ -87,6 +87,26 @@ def resolve_alert(alert_id):
     conn.commit()
     conn.close()
 
+def create_user(username, password, role):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    try:
+        cursor.execute('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', (username, password, role))
+        conn.commit()
+        success = True
+    except sqlite3.IntegrityError:
+        success = False # Username already exists
+    conn.close()
+    return success
+
+def authenticate_user(username, password, role):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM users WHERE username = ? AND password = ? AND role = ?', (username, password, role))
+    user = cursor.fetchone()
+    conn.close()
+    return user is not None
+
 if __name__ == '__main__':
     init_db()
     print("Database initialized successfully.")
