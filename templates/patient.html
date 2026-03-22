@@ -1,0 +1,59 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h2>Patient Dashboard</h2>
+    <div class="patient-id">ID: P-101 | Room: 104</div>
+</div>
+
+<div class="card">
+    <div class="video-container">
+        <img src="{{ url_for('video_feed') }}" alt="Camera Feed">
+    </div>
+    
+    <div class="controls-hint">
+        <div class="gesture-guide">
+            <span class="gesture-icon">✊</span>
+            <div>
+                <strong>Fist</strong><br>
+                <span>Normal Call</span>
+            </div>
+        </div>
+        <div class="gesture-guide">
+            <span class="gesture-icon">🖐️</span>
+            <div>
+                <strong>Four Fingers</strong><br>
+                <span>Emergency</span>
+            </div>
+        </div>
+        <div class="gesture-guide">
+            <span class="gesture-icon">☝️</span>
+            <div>
+                <strong>Index Finger</strong><br>
+                <span>Assistance</span>
+            </div>
+        </div>
+        <div class="gesture-guide">
+            <span class="gesture-icon">✌️</span>
+            <div>
+                <strong>Index + Middle</strong><br>
+                <span>Cancel Alert</span>
+            </div>
+        </div>
+        <div class="gesture-guide">
+            <span class="gesture-icon">👍</span>
+            <div>
+                <strong>Thumbs Up</strong><br>
+                <span>Call Family</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Patient dashboard doesn't need to poll or play sounds
+    const dashboardType = 'patient';
+</script>
+{% endblock %}

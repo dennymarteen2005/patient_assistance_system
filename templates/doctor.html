@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="dashboard-header">
+    <h2>Doctor Central</h2>
+    <p>Emergency alerts only</p>
+    <button onclick="initAudio(this)" class="btn" style="background:var(--primary);color:white">Enable Audio Alerts</button>
+</div>
+
+<div id="alerts-container" class="alerts-grid">
+    <p class="text-muted">Loading alerts...</p>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    const dashboardType = 'doctor';
+    function filterAlerts(alert) {
+        return alert.alert_type.toLowerCase().includes('emergency');
+    }
+</script>
+{% endblock %}
