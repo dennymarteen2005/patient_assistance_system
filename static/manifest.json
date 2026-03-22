@@ -5,5 +5,28 @@
   "display": "standalone",
   "background_color": "#f8fafc",
   "theme_color": "#2563eb",
-  "description": "Gesture-Based Smart Patient Assistance System"
+  "description": "Gesture-Based Smart Patient Assistance System",
+  "orientation": "portrait",
+  "id": "/",
+  "icons": [
+    {
+      "src": "/static/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/static/screenshot1.png",
+      "sizes": "1080x1920",
+      "type": "image/png"
+    }
+  ]
 }
