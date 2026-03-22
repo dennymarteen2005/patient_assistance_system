@@ -16,10 +16,10 @@
     <nav class="navbar">
         <div class="nav-brand">Hospital Assist</div>
         <div class="nav-links">
-            <a href="/">Patient View</a>
-            <a href="/nurse">Nurse Station</a>
-            <a href="/doctor">Doctor Central</a>
-            <a href="/family">Family Portal</a>
+            {% if session.get('role') %}
+                <span style="font-weight: 600; color: var(--primary); margin-right: 1.5rem; text-transform: capitalize;">{{ session.get('role') }} Mode</span>
+                <a href="/logout" style="color: var(--danger); font-weight: bold;">Logout 🔒</a>
+            {% endif %}
         </div>
     </nav>
     

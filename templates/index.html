@@ -1,0 +1,67 @@
+{% extends 'layout.html' %}
+{% block title %}Login - Hospital Assist{% endblock %}
+
+{% block content %}
+<div class="dashboard-header" style="justify-content: center; flex-direction: column;">
+    <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--primary);">Hospital Assist Portal</h2>
+    <p class="text-muted" style="font-size: 1.1rem;">Please select your designated portal to log in.</p>
+</div>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div style="background: #fef2f2; color: var(--danger); padding: 1rem; border-radius: 8px; border: 1px solid var(--danger); margin-bottom: 2rem; font-weight: 600; text-align: center;">
+      {{ messages[0] }}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<div class="alerts-grid">
+    <!-- Patient Card -->
+    <div class="card" style="text-align: center;">
+        <div style="font-size: 4rem; margin-bottom: 1rem;">🛏️</div>
+        <h3 style="margin-top: 0;">Patient Portal</h3>
+        <form action="/login" method="POST" style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem;">
+            <input type="hidden" name="role" value="patient">
+            <input type="text" name="username" placeholder="Username: patient_101" required style="padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); font-family: inherit;">
+            <input type="password" name="password" placeholder="Password: pass" required style="padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); font-family: inherit;">
+            <button type="submit" class="btn" style="background: #3b82f6; color: white;">Login</button>
+        </form>
+    </div>
+
+    <!-- Nurse Card -->
+    <div class="card" style="text-align: center;">
+        <div style="font-size: 4rem; margin-bottom: 1rem;">👩‍⚕️</div>
+        <h3 style="margin-top: 0;">Nurse Station</h3>
+        <form action="/login" method="POST" style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem;">
+            <input type="hidden" name="role" value="nurse">
+            <input type="text" name="username" placeholder="Username: nurse_admin" required style="padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); font-family: inherit;">
+            <input type="password" name="password" placeholder="Password: pass" required style="padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); font-family: inherit;">
+            <button type="submit" class="btn" style="background: #22c55e; color: white;">Login</button>
+        </form>
+    </div>
+
+    <!-- Doctor Card -->
+    <div class="card" style="text-align: center;">
+        <div style="font-size: 4rem; margin-bottom: 1rem;">🩺</div>
+        <h3 style="margin-top: 0;">Doctor Central</h3>
+        <form action="/login" method="POST" style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem;">
+            <input type="hidden" name="role" value="doctor">
+            <input type="text" name="username" placeholder="Username: doctor_smith" required style="padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); font-family: inherit;">
+            <input type="password" name="password" placeholder="Password: pass" required style="padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); font-family: inherit;">
+            <button type="submit" class="btn" style="background: #eab308; color: white;">Login</button>
+        </form>
+    </div>
+
+    <!-- Family Card -->
+    <div class="card" style="text-align: center;">
+        <div style="font-size: 4rem; margin-bottom: 1rem;">👨‍👩‍👧</div>
+        <h3 style="margin-top: 0;">Family Portal</h3>
+        <form action="/login" method="POST" style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem;">
+            <input type="hidden" name="role" value="family">
+            <input type="text" name="username" placeholder="Username: family_doe" required style="padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); font-family: inherit;">
+            <input type="password" name="password" placeholder="Password: pass" required style="padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); font-family: inherit;">
+            <button type="submit" class="btn" style="background: #8b5cf6; color: white;">Login</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
