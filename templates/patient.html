@@ -1,5 +1,12 @@
 {% extends 'layout.html' %}
 
+{% block extra_head %}
+<!-- Load MediaPipe via CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+{% endblock %}
+
 {% block content %}
 <div class="dashboard-header">
     <h2>Patient Dashboard</h2>
@@ -7,8 +14,10 @@
 </div>
 
 <div class="card">
-    <div class="video-container">
-        <img src="{{ url_for('video_feed') }}" alt="Camera Feed">
+    <div class="video-container" style="position: relative; background: #000; border-radius: 12px; overflow: hidden; height: 480px;">
+        <video id="input_video" style="display: none;" playsinline></video>
+        <canvas id="output_canvas" style="width: 100%; height: 100%; object-fit: contain;"></canvas>
+        <div id="gesture_overlay" style="position: absolute; top: 20px; left: 20px; color: #22c55e; font-size: 1.5rem; font-weight: 700; text-shadow: 0px 2px 4px rgba(0,0,0,0.8); background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 6px;">Camera Loading...</div>
     </div>
     
     <div class="controls-hint">
@@ -53,7 +62,130 @@
 
 {% block extra_scripts %}
 <script>
-    // Patient dashboard doesn't need to poll or play sounds
     const dashboardType = 'patient';
+    
+    // MediaPipe Client-Side Logic
+    const videoElement = document.getElementById('input_video');
+    const canvasElement = document.getElementById('output_canvas');
+    const canvasCtx = canvasElement.getContext('2d');
+    const overlay = document.getElementById('gesture_overlay');
+    
+    const PATIENT_ID = "P-101";
+    let lastGesture = null;
+    let gestureStartTime = 0;
+    let gestureCooldown = 0;
+    
+    function getGesture(landmarks) {
+        const indexExt = landmarks[8].y < landmarks[6].y;
+        const middleExt = landmarks[12].y < landmarks[10].y;
+        const ringExt = landmarks[16].y < landmarks[14].y;
+        const pinkyExt = landmarks[20].y < landmarks[18].y;
+        
+        const thumbUp = (landmarks[4].y < landmarks[3].y && landmarks[4].y < landmarks[5].y &&
+                        !indexExt && !middleExt && !ringExt && !pinkyExt);
+                        
+        if (thumbUp) return "Thumbs Up";
+        if (!indexExt && !middleExt && !ringExt && !pinkyExt) return "Fist";
+        if (indexExt && middleExt && ringExt && pinkyExt) return "Four Fingers";
+        if (indexExt && !middleExt && !ringExt && !pinkyExt) return "Index";
+        if (indexExt && middleExt && !ringExt && !pinkyExt) return "Index+Middle";
+        return null;
+    }
+    
+    function triggerAlert(gesture) {
+        let alertType = "";
+        if (gesture === "Fist") alertType = "Normal nurse call";
+        else if (gesture === "Four Fingers") alertType = "Emergency alert";
+        else if (gesture === "Index") alertType = "Normal assistance request";
+        else if (gesture === "Index+Middle") alertType = "Cancel alert";
+        else if (gesture === "Thumbs Up") alertType = "Call family member";
+        
+        fetch('/api/trigger', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                patient_id: PATIENT_ID,
+                room_no: "104",
+                bed_no: "A2",
+                ward_details: "General Ward",
+                gesture: gesture,
+                alert_type: alertType
+            })
+        });
+    }
+
+    function onResults(results) {
+        canvasCtx.save();
+        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        
+        // Match the canvas size to the video to prevent stretching
+        if (canvasElement.width !== results.image.width) {
+            canvasElement.width = results.image.width;
+            canvasElement.height = results.image.height;
+        }
+        
+        // Mirror the canvas
+        canvasCtx.translate(canvasElement.width, 0);
+        canvasCtx.scale(-1, 1);
+        canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+        
+        let currentGesture = null;
+        if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+            for (const landmarks of results.multiHandLandmarks) {
+                drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {color: '#ffffff', lineWidth: 4});
+                drawLandmarks(canvasCtx, landmarks, {color: '#2563eb', lineWidth: 2, radius: 4});
+                currentGesture = getGesture(landmarks);
+                break; // Only one hand
+            }
+        }
+        canvasCtx.restore();
+        
+        const now = Date.now();
+        if (now < gestureCooldown) {
+            overlay.innerText = "Alert Triggered!";
+            overlay.style.color = "#ef4444"; // Red
+        } else if (currentGesture) {
+            overlay.innerText = "Detecting: " + currentGesture;
+            overlay.style.color = "#3b82f6"; // Blue
+            if (currentGesture === lastGesture) {
+                if (now - gestureStartTime > 2000) {
+                    triggerAlert(currentGesture);
+                    gestureCooldown = now + 4000;
+                }
+            } else {
+                lastGesture = currentGesture;
+                gestureStartTime = now;
+            }
+        } else {
+            overlay.innerText = "Show a hand gesture";
+            overlay.style.color = "#22c55e"; // Green
+            lastGesture = null;
+        }
+    }
+
+    const hands = new Hands({locateFile: (file) => {
+        return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+    }});
+    hands.setOptions({
+        maxNumHands: 1,
+        modelComplexity: 1,
+        minDetectionConfidence: 0.7,
+        minTrackingConfidence: 0.7
+    });
+    hands.onResults(onResults);
+
+    const camera = new Camera(videoElement, {
+        onFrame: async () => {
+            await hands.send({image: videoElement});
+        },
+        width: 1280,
+        height: 720
+    });
+    camera.start().then(() => {
+        console.log("Camera started successfully");
+    }).catch(err => {
+        overlay.innerText = "Camera access denied. Please allow camera permissions.";
+        overlay.style.color = "red";
+    });
 </script>
 {% endblock %}

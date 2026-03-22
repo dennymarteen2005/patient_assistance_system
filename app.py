@@ -1,14 +1,10 @@
-from flask import Flask, render_template, Response, jsonify, request
-from camera import VideoCamera, generate_frames
-from database import init_db, get_active_alerts, resolve_alert
+from flask import Flask, render_template, jsonify, request
+from database import init_db, get_active_alerts, resolve_alert, record_alert, cancel_patient_alerts
+import os
 
 app = Flask(__name__)
-
-# Initialize DB on startup
+# Initialize the database on startup
 init_db()
-
-# Camera instance
-camera = VideoCamera()
 
 @app.route('/')
 def patient_dashboard():
@@ -26,9 +22,22 @@ def doctor_dashboard():
 def family_dashboard():
     return render_template('family.html')
 
-@app.route('/video_feed')
-def video_feed():
-    return Response(generate_frames(camera), mimetype='multipart/x-mixed-replace; boundary=frame')
+@app.route('/api/trigger', methods=['POST'])
+def trigger_alert():
+    data = request.json
+    gesture = data.get('gesture')
+    patient_id = data.get('patient_id')
+    room_no = data.get('room_no')
+    bed_no = data.get('bed_no')
+    ward = data.get('ward_details')
+    alert_type = data.get('alert_type')
+    
+    if gesture == 'Index+Middle':
+        cancel_patient_alerts(patient_id)
+        return jsonify({"status": "cancelled"})
+    else:
+        record_alert(patient_id, room_no, bed_no, ward, alert_type)
+        return jsonify({"status": "triggered"})
 
 @app.route('/api/alerts', methods=['GET'])
 def fetch_alerts():
@@ -41,4 +50,5 @@ def api_resolve_alert(alert_id):
     return jsonify({"status": "success"})
 
 if __name__ == '__main__':
+    # Threaded mode allows multiple dashboards on multiple devices
     app.run(host='0.0.0.0', port=5000, debug=False, threaded=True)
